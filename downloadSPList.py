@@ -2,9 +2,11 @@ from shareplum import Site
 from requests_ntlm import HttpNtlmAuth
 from credentials import Credentials
 import pandas as pd
+import os
 
 
 def download_dealer_list():
+    ''' downloads the current dealer listing from SharePoint and saves as CustomerDocuments.xlsx '''
     creds = Credentials()
 
     cred = HttpNtlmAuth(creds.username, creds.password)
@@ -60,7 +62,9 @@ def download_dealer_list():
     keys = set(keys)
     print(keys)
     df = pd.DataFrame(dealer_list, columns=columns)
-    df.to_excel('Customer_Documents.xlsx', index=False, header=True)
+    # delete existing listing, if it exists
+    if os.path.isfile('../Customer_Documents.xlsx'): os.remove('../Customer_Documents.xlsx')
+    df.to_excel('../Customer_Documents.xlsx', index=False, header=True)
 
 def main():
     download_dealer_list()
